@@ -1,4 +1,3 @@
-import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { validationSchema } from './config/validation';
@@ -6,6 +5,16 @@ import { validationSchema } from './config/validation';
 import { PrismaModule } from '../prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
 import { TaskModule } from './modules/task/task.module';
+import { AuthModule } from './modules/auth/auth.module';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
+import { RequestContextMiddleware } from './common/middleware/request-context.middleware';
+
+
+import { LoggerService } from './common/logger/logger.service';
 
 @Module({
   imports: [
@@ -18,6 +27,12 @@ import { TaskModule } from './modules/task/task.module';
     PrismaModule,
     UserModule,
     TaskModule,
+    AuthModule,
   ],
+  providers: [LoggerService],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestContextMiddleware).forRoutes('*');
+  }
+}
