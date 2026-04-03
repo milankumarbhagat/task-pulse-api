@@ -12,6 +12,7 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { RequestContextMiddleware } from './common/middleware/request-context.middleware';
+import { AppController } from './app.controller';
 
 
 import { LoggerService } from './common/logger/logger.service';
@@ -29,6 +30,7 @@ import { LoggerService } from './common/logger/logger.service';
     TaskModule,
     AuthModule,
   ],
+  controllers: [AppController],
   providers: [LoggerService],
 })
 export class AppModule implements NestModule {
