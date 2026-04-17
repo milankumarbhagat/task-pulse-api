@@ -27,10 +27,19 @@ export class RequestContextMiddleware implements NestMiddleware {
                 this.logger.error(message, { traceId, ...meta }),
         };
 
-        req.log.info('Incoming request', {
-            method: req.method,
-            url: req.originalUrl,
-        });
+        // Log the payload if request method is POST or PUT
+        if (req.method === 'POST' || req.method === 'PUT') {
+            req.log.info('Incoming request', {
+                method: req.method,
+                url: req.originalUrl,
+                payload: req.body,
+            });
+        } else {
+            req.log.info('Incoming request', {
+                method: req.method,
+                url: req.originalUrl,
+            });
+        }
 
         res.on('finish', () => {
             const duration = Date.now() - startTime;
