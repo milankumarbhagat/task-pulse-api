@@ -21,4 +21,9 @@ export class AuthController {
     verify(@Body('token') token: string) {
         return this.authService.verifyToken(token);
     }
+
+    @Post('check-email')
+    checkEmail(@Body('email') email: string) {
+        return this.authService.userEmailExists(email);
+    }
 }

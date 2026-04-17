@@ -43,22 +43,32 @@ export class AuthService {
 
         return {
             access_token: token,
-            user: { 
-                id: user.id, 
-                email: user.email, 
-                firstName: user.firstName, 
-                lastName: user.lastName 
+            user: {
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName
             }
         };
     }
 
+    /* 
+        This function is used to verify the token.
+    */
     async verifyToken(token: string) {
         try {
-            console.log("\n\n verifyToken fn called ");
             const decoded = this.jwtService.verify(token);
             return decoded;
         } catch (error) {
             throw new UnauthorizedException('Invalid token');
         }
+    }
+
+    async userEmailExists(email: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { email },
+            select: { id: true }, // Only return the id
+        });
+        return !!user;
     }
 }
