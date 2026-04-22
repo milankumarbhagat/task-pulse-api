@@ -11,8 +11,10 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { RequestContextMiddleware } from './common/middleware/request-context.middleware';
 import { AppController } from './app.controller';
+import { NotificationModule } from './modules/notification/notification.module';
 
 
 import { LoggerService } from './common/logger/logger.service';
@@ -29,6 +31,8 @@ import { LoggerService } from './common/logger/logger.service';
     UserModule,
     TaskModule,
     AuthModule,
+    NotificationModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [LoggerService],
