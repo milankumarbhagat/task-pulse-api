@@ -16,7 +16,8 @@ model User {
   dob        DateTime?
   phone      String?
   occupation String?
-  password   String
+  password   String?
+  googleId   String?  @unique
   createdAt  DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   tasks      Task[]
@@ -44,7 +45,7 @@ enum Priority {
 }
 
 enum Status {
-  PENDING
+  TODO
   IN_PROGRESS
   COMPLETED
 }

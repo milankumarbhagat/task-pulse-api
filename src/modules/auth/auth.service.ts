@@ -32,6 +32,11 @@ export class AuthService {
         });
 
         if (!user) throw new UnauthorizedException('Invalid credentials');
+
+        if (!user.password) {
+            throw new UnauthorizedException('Please login with Google or reset your password.');
+        }
+
         const isMatch = await bcrypt.compare(dto.password, user.password);
 
         if (!isMatch) throw new UnauthorizedException('Invalid credentials');
