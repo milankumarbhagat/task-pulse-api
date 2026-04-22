@@ -8,6 +8,17 @@ export class PrismaService
 
     async onModuleInit() {
         await this.$connect();
+        
+        // Temporary migration: Convert legacy PENDING status to new TODO status
+        try {
+            await (this as any).task.updateMany({
+                where: { status: 'PENDING' },
+                data: { status: 'TODO' }
+            });
+            console.log('Migration: Successfully converted PENDING tasks to TODO');
+        } catch (e) {
+            // Ignore error if PENDING doesn't exist in the current database state
+        }
     }
 
     async onModuleDestroy() {
