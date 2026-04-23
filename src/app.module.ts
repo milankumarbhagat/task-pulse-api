@@ -15,6 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RequestContextMiddleware } from './common/middleware/request-context.middleware';
 import { AppController } from './app.controller';
 import { NotificationModule } from './modules/notification/notification.module';
+import { MailModule } from './modules/mail/mail.module';
 
 
 import { LoggerService } from './common/logger/logger.service';
@@ -32,6 +33,7 @@ import { LoggerService } from './common/logger/logger.service';
     TaskModule,
     AuthModule,
     NotificationModule,
+    MailModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

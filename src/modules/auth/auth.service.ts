@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { LoginDto } from './dto/login.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
+import { MailService } from '../mail/mail.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
         private prisma: PrismaService,
         private jwtService: JwtService,
         private configService: ConfigService,
+        private mailService: MailService,
     ) {
         this.googleClient = new OAuth2Client(
             this.configService.get<string>('GOOGLE_CLIENT_ID'),
@@ -147,5 +150,61 @@ export class AuthService {
             console.error('Google Auth Error:', error);
             throw new UnauthorizedException('Google authentication failed');
         }
+    }
+    async forgotPassword(email: string) {
+        const user = await this.prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            // We return success even if user not found for security (don't reveal registered emails)
+            return { message: 'If an account exists with this email, you will receive a reset link.' };
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const expires = new Date();
+        expires.setHours(expires.getHours() + 1); // 1 hour expiry
+
+        await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+                resetPasswordToken: token,
+                resetPasswordExpires: expires,
+            },
+        });
+
+        try {
+            await this.mailService.sendPasswordResetEmail(user.email, token, user.firstName);
+        } catch (error) {
+            console.error('Email Delivery Error:', error);
+            // We still return success to the frontend to prevent email enumeration
+        }
+
+        return { message: 'If an account exists with this email, you will receive a reset link.' };
+    }
+
+    async resetPassword(dto: any) {
+        const { token, password } = dto;
+
+        const user = await this.prisma.user.findFirst({
+            where: {
+                resetPasswordToken: token,
+                resetPasswordExpires: { gt: new Date() },
+            },
+        });
+
+        if (!user) {
+            throw new UnauthorizedException('Invalid or expired reset token');
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null,
+            },
+        });
+
+        return { message: 'Password has been reset successfully.' };
     }
 }

@@ -17,9 +17,11 @@ model User {
   phone      String?
   occupation String?
   password   String?
-  googleId   String?  @unique
-  picture    String?
-  createdAt  DateTime @default(now())
+  googleId             String?   @unique
+  picture              String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime  @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   tasks      Task[]
   pushSubscriptions PushSubscription[]

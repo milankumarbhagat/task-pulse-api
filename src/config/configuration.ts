@@ -10,4 +10,8 @@ export default () => ({
     jwtSecret: process.env.JWT_SECRET,
     googleClientId: process.env.GOOGLE_CLIENT_ID,
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:4200',
+    resendApiKey: process.env.RESEND_API_KEY,
+    resendUseCustomDomain: process.env.RESEND_USE_CUSTOM_DOMAIN === 'true',
+    resendFromEmail: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
 });
