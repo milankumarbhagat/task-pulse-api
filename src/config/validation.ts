@@ -8,4 +8,6 @@ export const validationSchema = Joi.object({
     DB_PASS: Joi.string().required(),
     DB_NAME: Joi.string().required(),
     JWT_SECRET: Joi.string().required(),
+    GOOGLE_CLIENT_ID: Joi.string().optional(),
+    GOOGLE_CLIENT_SECRET: Joi.string().optional(),
 });

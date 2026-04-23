@@ -18,6 +18,7 @@ model User {
   occupation String?
   password   String?
   googleId   String?  @unique
+  picture    String?
   createdAt  DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   tasks      Task[]
