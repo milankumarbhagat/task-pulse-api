@@ -10,4 +10,8 @@ export const validationSchema = Joi.object({
     JWT_SECRET: Joi.string().required(),
     GOOGLE_CLIENT_ID: Joi.string().optional(),
     GOOGLE_CLIENT_SECRET: Joi.string().optional(),
+    FRONTEND_URL: Joi.string().uri().optional(),
+    RESEND_API_KEY: Joi.string().required(),
+    RESEND_USE_CUSTOM_DOMAIN: Joi.string().valid('true', 'false').optional().default('false'),
+    RESEND_FROM_EMAIL: Joi.string().email().optional(),
 });

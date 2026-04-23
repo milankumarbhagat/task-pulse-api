@@ -32,4 +32,14 @@ export class AuthController {
     googleLogin(@Body() dto: GoogleLoginDto) {
         return this.authService.googleLogin(dto);
     }
+
+    @Post('forgot-password')
+    forgotPassword(@Body('email') email: string) {
+        return this.authService.forgotPassword(email);
+    }
+
+    @Post('reset-password')
+    resetPassword(@Body() dto: any) {
+        return this.authService.resetPassword(dto);
+    }
 }
