@@ -25,7 +25,14 @@ export class UserService {
         });
     }
 
-    update(id: number, dto: UpdateUserDto) {
+    async update(id: number, dto: UpdateUserDto) {
+        const currentUser = await this.prisma.user.findUnique({ where: { id } });
+        
+        // If DOB is already set in DB, prevent updating it again
+        if (currentUser?.dob && dto.dob) {
+            delete (dto as any).dob;
+        }
+
         return this.prisma.user.update({
             where: { id },
             data: dto,
