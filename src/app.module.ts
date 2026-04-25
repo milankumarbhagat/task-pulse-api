@@ -19,6 +19,7 @@ import { MailModule } from './modules/mail/mail.module';
 
 
 import { LoggerService } from './common/logger/logger.service';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { LoggerService } from './common/logger/logger.service';
     NotificationModule,
     MailModule,
     ScheduleModule.forRoot(),
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [LoggerService],
