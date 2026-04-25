@@ -25,6 +25,20 @@ model User {
   updatedAt DateTime @default(now()) @updatedAt
   tasks      Task[]
   pushSubscriptions PushSubscription[]
+  settings   UserSetting?
+}
+
+model UserSetting {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  theme           String   @default("light")
+  language        String   @default("en")
+  timezone        String   @default("Asia/Kolkata")
+  dateFormat      String   @default("EEE, dd MMM yyyy")
+  sidebarState    String   @default("expanded")
+  extraSettings   Json     @default("{}")
+  user            User     @relation(fields: [userId], references: [id])
+  updatedAt       DateTime @updatedAt
 }
 
 model PushSubscription {
