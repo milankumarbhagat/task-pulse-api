@@ -18,7 +18,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { MailModule } from './modules/mail/mail.module';
 
 
-import { LoggerService } from './common/logger/logger.service';
+import { LoggerModule } from './common/logger/logger.module';
 import { SettingsModule } from './settings/settings.module';
 
 @Module({
@@ -37,9 +37,9 @@ import { SettingsModule } from './settings/settings.module';
     MailModule,
     ScheduleModule.forRoot(),
     SettingsModule,
+    LoggerModule,
   ],
   controllers: [AppController],
-  providers: [LoggerService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

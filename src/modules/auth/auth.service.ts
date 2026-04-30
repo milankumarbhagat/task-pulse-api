@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +8,9 @@ import { LoginDto } from './dto/login.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
+import { RecaptchaService } from './recaptcha.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoggerService } from '../../common/logger/logger.service';
 
 @Injectable()
 export class AuthService {
@@ -18,13 +21,21 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
         private mailService: MailService,
+        private recaptchaService: RecaptchaService,
+        private logger: LoggerService,
     ) {
         this.googleClient = new OAuth2Client(
             this.configService.get<string>('GOOGLE_CLIENT_ID'),
         );
     }
 
-    async register(dto: any) {
+    async register(dto: RegisterDto) {
+        // Verify reCAPTCHA
+        const isHuman = await this.recaptchaService.verify(dto.recaptchaToken);
+        if (!isHuman) {
+            throw new BadRequestException('reCAPTCHA verification failed or score too low');
+        }
+
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
         const user = await this.prisma.user.create({
@@ -32,6 +43,10 @@ export class AuthService {
                 email: dto.email,
                 firstName: dto.firstName,
                 lastName: dto.lastName,
+                gender: dto.gender,
+                dob: dto.dob ? new Date(dto.dob) : undefined,
+                phone: dto.phone,
+                occupation: dto.occupation,
                 password: hashedPassword,
             },
         });
@@ -44,6 +59,8 @@ export class AuthService {
             where: { email: dto.email },
         });
 
+        this.logger.info('Found User ====> ', { user });
+
         if (!user) throw new UnauthorizedException('Invalid credentials');
 
         if (!user.password) {
@@ -51,6 +68,8 @@ export class AuthService {
         }
 
         const isMatch = await bcrypt.compare(dto.password, user.password);
+
+        this.logger.info('Password Match ====> ', { isMatch });
 
         if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
@@ -124,7 +143,7 @@ export class AuthService {
                 // Update existing user with Google ID and Picture if needed
                 user = await this.prisma.user.update({
                     where: { email },
-                    data: { 
+                    data: {
                         googleId: user.googleId || googleId,
                         picture: user.picture || picture, // Update picture if not present
                     },

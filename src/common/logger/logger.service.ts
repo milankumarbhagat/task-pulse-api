@@ -38,4 +38,8 @@ export class LoggerService {
     error(message: string, meta?: any) {
         this.logger.error(message, meta);
     }
+
+    warn(message: string, meta?: any) {
+        this.logger.warn(message, meta);
+    }
 }
