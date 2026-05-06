@@ -57,20 +57,34 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
+## Database Configuration (Supabase)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+This project uses **Supabase** with **Prisma**. For correct operation, especially on platforms like Render, you must configure two connection strings:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1.  **`DATABASE_URL`**: Used by the application. Use the **Transaction Pooler** connection (Port `6543`).
+    *   Example: `postgresql://postgres.[ID]:[PASS]@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true`
+2.  **`DIRECT_URL`**: Used for migrations and schema changes. Use the **Session/Direct** connection (Port `5432`).
+    *   Example: `postgresql://postgres.[ID]:[PASS]@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres`
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+## Deployment (Render)
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+When deploying to Render, ensure the following setup:
 
-## Resources
+### Environment Variables
+Set the following in the Render "Environment" tab:
+- `DATABASE_URL`: (Supabase Pooling URL - port 6543)
+- `DIRECT_URL`: (Supabase Direct URL - port 5432)
+- `JWT_SECRET`: Your random secret key
+- `RESEND_API_KEY`: Your Resend API key
+- `FRONTEND_URL`: The URL of your frontend application
+
+### Build & Start Commands
+- **Build Command**: `npm install && npx prisma generate && npx prisma migrate deploy && npm run build`
+- **Start Command**: `npm run start:prod`
+
+> **Note**: `npx prisma migrate deploy` is used instead of `db push` to ensure stable and non-interactive database updates during deployment.
+
+## Compile and run the project
 
 Check out a few resources that may come in handy when working with NestJS:
 
