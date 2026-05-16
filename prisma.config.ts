@@ -12,5 +12,6 @@ export default defineConfig({
   engine: "classic", // Engine type - classic or library
   datasource: {
     url: env("DATABASE_URL"), // Database URL - Your DB connection string
+    directUrl: env("DIRECT_URL"),
   },
 });

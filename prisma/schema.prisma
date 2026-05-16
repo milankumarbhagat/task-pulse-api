@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Database provider - PostgreSQL
-  url      = env("DATABASE_URL") // Database URL - Your DB connection string
+  provider  = "postgresql" // Database provider - PostgreSQL
+  url       = env("DATABASE_URL") // Database URL - Your DB connection string
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
