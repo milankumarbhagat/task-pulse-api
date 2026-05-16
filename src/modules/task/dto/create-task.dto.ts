@@ -4,12 +4,12 @@ import { Priority, Status } from '@prisma/client';
 export class CreateTaskDto {
     @IsString()
     @IsNotEmpty()
-    @MaxLength(50)
+    @MaxLength(75)
     title: string;
 
     @IsString()
     @IsOptional()
-    @MaxLength(200)
+    @MaxLength(400)
     description?: string;
 
     @IsDateString()
