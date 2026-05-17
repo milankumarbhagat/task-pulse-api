@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Req, Param, Put, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Req, Param, Put, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -19,6 +19,11 @@ export class TaskController {
     @Get()
     findAll(@Req() req: any) {
         return this.taskService.findAll(+req.user.sub);
+    }
+
+    @Get('analytics')
+    getAnalytics(@Req() req: any, @Query('timeframe') timeframe?: string) {
+        return this.taskService.getAnalytics(+req.user.sub, timeframe);
     }
 
     @Get(':id')
