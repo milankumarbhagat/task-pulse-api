@@ -23,6 +23,7 @@ import { MailModule } from './modules/mail/mail.module';
 
 import { LoggerService } from './common/logger/logger.service';
 import { SettingsModule } from './settings/settings.module';
+import { NotesModule } from './modules/notes/notes.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { SettingsModule } from './settings/settings.module';
       adapter: ExpressAdapter,
     }),
     SettingsModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [LoggerService],
