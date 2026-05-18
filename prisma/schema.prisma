@@ -28,6 +28,7 @@ model User {
   notes                Note[]
   pushSubscriptions    PushSubscription[]
   settings             UserSetting?
+  jobApplications      JobApplication[]
 }
 
 model UserSetting {
@@ -93,4 +94,26 @@ enum Status {
   IN_PROGRESS
   COMPLETED
   PENDING
+}
+
+model JobApplication {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName    String    @db.VarChar(100)
+  jobTitle       String    @db.VarChar(100)
+  companyWebsite String?   @db.VarChar(255)
+  salaryRange    String?   @db.VarChar(50)
+  portal         String    @db.VarChar(50)  // e.g. LinkedIn, Indeed, Company Site
+  source         String?   @db.VarChar(50)  // e.g. Referral, Cold Apply
+  status         String    @db.VarChar(30)  // e.g. WISHLIST, APPLIED, INTERVIEWING, OFFER, ARCHIVED
+  responseCame   Boolean   @default(false)
+  notes          String?   @db.VarChar(1000)
+  resumeLink     String?   @db.VarChar(255)
+  appliedDate    DateTime  @default(now())
+  interviewDate  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([userId])
 }

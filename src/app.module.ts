@@ -24,6 +24,7 @@ import { MailModule } from './modules/mail/mail.module';
 import { LoggerService } from './common/logger/logger.service';
 import { SettingsModule } from './settings/settings.module';
 import { NotesModule } from './modules/notes/notes.module';
+import { JobApplicationModule } from './modules/job-application/job-application.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { NotesModule } from './modules/notes/notes.module';
     }),
     SettingsModule,
     NotesModule,
+    JobApplicationModule,
   ],
   controllers: [AppController],
   providers: [LoggerService],
