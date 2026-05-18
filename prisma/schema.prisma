@@ -60,6 +60,7 @@ model Task {
   dueDate     DateTime
   priority    Priority
   status      Status
+  category    String?
   userId      Int // this is the foreign key
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
