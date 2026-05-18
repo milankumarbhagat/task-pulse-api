@@ -24,7 +24,10 @@ export class NotesService {
     const where: any = { userId };
 
     if (category) {
-      where.category = category;
+      const categoryList = category.split(',').map(c => c.trim()).filter(Boolean);
+      if (categoryList.length > 0) {
+        where.category = { in: categoryList };
+      }
     }
 
     if (keyword) {
